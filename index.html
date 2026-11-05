@@ -1,865 +1,201 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Калькулятори — відсотки, валюта, знижки, кредит, площа</title>
-<meta name="description" content="Безкоштовні онлайн-калькулятори: відсотки, валюта, знижки, кредит і площа. Миттєвий розрахунок прямо в браузері.">
-<style>
-/* ===== Токени дизайну ===== */
-:root {
-  --bg: #F7F8FA;
-  --surface: #FFFFFF;
-  --ink: #1B2430;
-  --muted: #5B6472;
-  --accent: #2F6FED;
-  --accent-dark: #1E54C6;
-  --accent-tint: #EAF1FF;
-  --positive: #178F82;
-  --border: #E3E7ED;
-  --radius: 10px;
-  --shadow: 0 1px 2px rgba(27,36,48,0.06), 0 6px 16px rgba(27,36,48,0.05);
-  --mono: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
-  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Калькулятор</title>
+  
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-K2CH8KVG');</script>
+  <!-- End Google Tag Manager -->
 
-* { box-sizing: border-box; }
+  <style>
+    :root {
+      --bg: #F7F9FC;
+      --surface: #FFFFFF;
+      --ink: #1B2430;
+      --muted: #5B6472;
+      --accent: #2F6FED;
+      --accent-dark: #1E54C6;
+      --accent-tint: #EAF1FF;
+      --positive: #178F82;
+      --border: #E3E7ED;
+      --radius: 10px;
+      --shadow: 0 1px 2px rgba(27,36,48,0.06);
+      --mono: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--sans);
-  line-height: 1.5;
-  -webkit-text-size-adjust: 100%;
-}
+    * { box-sizing: border-box; }
 
-h1, h2 { line-height: 1.2; margin: 0 0 12px; }
-p { margin: 0 0 8px; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.5;
+    }
 
-*:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
 
-@media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; }
-}
+    .calculator {
+      width: 100%;
+      max-width: 360px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
 
-/* ===== Header ===== */
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 14px 20px;
-}
+    .display {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      font-size: 2rem;
+      text-align: right;
+      margin-bottom: 20px;
+      word-break: break-all;
+      font-family: var(--mono);
+    }
 
-.brand { display: flex; align-items: baseline; gap: 6px; white-space: nowrap; }
-.brand-mark { color: var(--accent); font-weight: 800; font-size: 1.4rem; }
-.brand-name { font-weight: 700; font-size: 1.1rem; letter-spacing: -0.01em; }
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
 
-.search-wrap { flex: 1; max-width: 360px; }
-#searchInput {
-  width: 100%;
-  padding: 9px 14px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  font-size: 14px;
-  background: var(--bg);
-  color: var(--ink);
-}
+    button {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--ink);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
 
-/* ===== Layout ===== */
-.layout {
-  display: flex;
-  align-items: flex-start;
-  gap: 28px;
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 24px 20px 60px;
-}
+    button:hover {
+      background: var(--bg);
+    }
 
-.sidebar {
-  width: 220px;
-  flex-shrink: 0;
-  position: sticky;
-  top: 76px;
-}
+    button:active {
+      background: var(--accent-tint);
+    }
 
-.nav-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+    .operator {
+      color: var(--accent);
+      background: var(--accent-tint);
+      border-color: transparent;
+    }
 
-.nav-link {
-  display: block;
-  width: 100%;
-  text-align: left;
-  background: none;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 12px;
-  font-size: 14px;
-  font-family: inherit;
-  color: var(--muted);
-  cursor: pointer;
-}
+    .operator:hover {
+      background: #d8e5ff;
+    }
 
-.nav-link:hover { background: var(--accent-tint); color: var(--ink); }
-.nav-link.is-active { background: var(--accent); color: #fff; font-weight: 600; }
-.nav-link.is-hidden { display: none; }
+    .equals {
+      background: var(--accent);
+      color: white;
+      border-color: transparent;
+      grid-column: span 2;
+    }
 
-.content { flex: 1; min-width: 0; }
-
-.view { display: none; }
-.view.is-active { display: block; }
-
-/* ===== Hero / Home ===== */
-.hero { padding: 8px 0 24px; max-width: 640px; }
-.hero h1 { font-size: 2rem; letter-spacing: -0.02em; }
-.hero p { color: var(--muted); font-size: 1.02rem; }
-
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 16px;
-}
-
-.calc-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-left: 4px solid var(--accent);
-  border-radius: var(--radius);
-  padding: 20px;
-  box-shadow: var(--shadow);
-}
-
-.calc-card.is-hidden { display: none; }
-.calc-card h2 { font-size: 1.05rem; }
-.calc-card p { color: var(--muted); font-size: 0.92rem; min-height: 40px; }
-
-.card-open {
-  margin-top: 6px;
-  background: none;
-  border: 1px solid var(--accent);
-  color: var(--accent);
-  padding: 7px 14px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 13px;
-  cursor: pointer;
-}
-.card-open:hover { background: var(--accent); color: #fff; }
-
-/* ===== Panels / forms ===== */
-.view h1 { font-size: 1.5rem; margin-bottom: 18px; }
-
-.panel {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 22px;
-  margin-bottom: 18px;
-}
-
-.panel h2 { font-size: 1.05rem; }
-.hint { color: var(--muted); font-size: 0.88rem; }
-
-.field-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 14px;
-  margin: 14px 0;
-}
-
-.field-row label {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 13px;
-  color: var(--muted);
-  flex: 1 1 160px;
-}
-
-.field-input,
-select {
-  font-family: var(--sans);
-  font-size: 15px;
-  color: var(--ink);
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--surface);
-  width: 100%;
-}
-
-.btn {
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-}
-.btn:hover { background: var(--accent-dark); }
-
-.btn-swap {
-  background: var(--accent-tint);
-  border: 1px solid var(--border);
-  color: var(--accent-dark);
-  border-radius: 8px;
-  width: 40px;
-  height: 40px;
-  font-size: 16px;
-  cursor: pointer;
-  flex: 0 0 auto;
-}
-.btn-swap:hover { background: var(--accent); color: #fff; }
-
-.result {
-  margin-top: 14px;
-  font-family: var(--mono);
-  font-variant-numeric: tabular-nums;
-  font-size: 1.15rem;
-  font-weight: 700;
-  background: var(--accent-tint);
-  color: var(--ink);
-  padding: 14px 16px;
-  border-radius: 8px;
-}
-
-/* ===== Ad slots (Google AdSense placeholders) ===== */
-.ad-slot {
-  border: 1px dashed var(--border);
-  color: var(--muted);
-  text-align: center;
-  padding: 16px;
-  font-size: 13px;
-  border-radius: 8px;
-  margin-top: 20px;
-}
-
-.ad-slot--side { margin-top: 20px; }
-
-/* ===== Footer ===== */
-.site-footer {
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 0 20px 40px;
-  color: var(--muted);
-  font-size: 13px;
-}
-.site-footer .ad-slot--footer { margin-bottom: 16px; }
-
-/* ===== Mobile ===== */
-@media (max-width: 820px) {
-  .site-header { flex-wrap: wrap; }
-  .search-wrap { order: 3; max-width: none; flex-basis: 100%; }
-
-  .layout { flex-direction: column; padding-top: 16px; }
-
-  .sidebar { width: 100%; position: static; }
-  .nav-list {
-    flex-direction: row;
-    overflow-x: auto;
-    padding-bottom: 6px;
-    -webkit-overflow-scrolling: touch;
-  }
-  .nav-link { white-space: nowrap; }
-  .ad-slot--side { display: none; }
-
-  .hero h1 { font-size: 1.6rem; }
-  .field-row { flex-direction: column; align-items: stretch; }
-  .field-row label { flex: 1 1 auto; }
-  .btn-swap { align-self: center; }
-}
-
-</style>
+    .equals:hover {
+      background: var(--accent-dark);
+    }
+  </style>
 </head>
 <body>
 
-<header class="site-header">
-  <div class="brand">
-    <span class="brand-mark">=</span>
-    <span class="brand-name">Калькулятори</span>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K2CH8KVG"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <div class="calculator">
+    <div id="display" class="display">0</div>
+    <div class="buttons">
+      <button onclick="clearDisplay()" style="grid-column: span 2; color: #d32f2f;">C</button>
+      <button class="operator" onclick="appendOperator('/')">/</button>
+      <button class="operator" onclick="appendOperator('*')">×</button>
+      
+      <button onclick="appendNumber('7')">7</button>
+      <button onclick="appendNumber('8')">8</button>
+      <button onclick="appendNumber('9')">9</button>
+      <button class="operator" onclick="appendOperator('-')">-</button>
+      
+      <button onclick="appendNumber('4')">4</button>
+      <button onclick="appendNumber('5')">5</button>
+      <button onclick="appendNumber('6')">6</button>
+      <button class="operator" onclick="appendOperator('+')">+</button>
+      
+      <button onclick="appendNumber('1')">1</button>
+      <button onclick="appendNumber('2')">2</button>
+      <button onclick="appendNumber('3')">3</button>
+      <button class="equals" onclick="calculate()">=</button>
+      
+      <button onclick="appendNumber('0')" style="grid-column: span 2;">0</button>
+      <button onclick="appendNumber('.')">.</button>
+    </div>
   </div>
-  <div class="search-wrap">
-    <input type="search" id="searchInput" placeholder="Пошук калькулятора…" aria-label="Пошук калькулятора">
-  </div>
-</header>
 
-<div class="layout">
+  <script>
+    let display = document.getElementById('display');
+    let currentInput = '0';
 
-  <!-- НАВІГАЦІЯ -->
-  <nav class="sidebar" aria-label="Список калькуляторів">
-    <ul id="navList" class="nav-list">
-      <li><button class="nav-link is-active" data-target="home" data-keywords="головна home">Головна</button></li>
-      <li><button class="nav-link" data-target="percent" data-keywords="відсотки проценти percent">Відсотки</button></li>
-      <li><button class="nav-link" data-target="currency" data-keywords="валюта курс гроші обмін currency">Валюта</button></li>
-      <li><button class="nav-link" data-target="discount" data-keywords="знижка акція sale discount">Знижка</button></li>
-      <li><button class="nav-link" data-target="loan" data-keywords="кредит позика іпотека loan">Кредит</button></li>
-      <li><button class="nav-link" data-target="area" data-keywords="площа фігура area">Площа</button></li>
-    </ul>
-
-    <!-- Рекламний блок Google AdSense (бокова панель).
-         Сюди в майбутньому можна вставити код AdSense: <ins class="adsbygoogle">...</ins> -->
-    <div class="ad-slot ad-slot--side" data-ad-slot="sidebar">Місце для реклами</div>
-  </nav>
-
-  <!-- ОСНОВНИЙ ВМІСТ -->
-  <main class="content">
-
-    <!-- ГОЛОВНА -->
-    <section id="home" class="view is-active">
-      <div class="hero">
-        <h1>Порахуйте все за кілька секунд</h1>
-        <p>П’ять калькуляторів для щоденних розрахунків. Введіть числа — відповідь з’явиться одразу, без перезавантаження сторінки.</p>
-      </div>
-
-      <div class="card-grid" id="cardGrid">
-        <article class="calc-card" data-keywords="відсотки проценти">
-          <h2>Відсотки</h2>
-          <p>Відсоток від числа, число у відсотках, збільшення чи зменшення на відсоток.</p>
-          <button class="card-open" data-target="percent">Відкрити</button>
-        </article>
-
-        <article class="calc-card" data-keywords="валюта курс гроші обмін">
-          <h2>Валюта</h2>
-          <p>Конвертація між валютами за поточним курсом.</p>
-          <button class="card-open" data-target="currency">Відкрити</button>
-        </article>
-
-        <article class="calc-card" data-keywords="знижка акція">
-          <h2>Знижка</h2>
-          <p>Кінцева ціна та сума економії при знижці у відсотках.</p>
-          <button class="card-open" data-target="discount">Відкрити</button>
-        </article>
-
-        <article class="calc-card" data-keywords="кредит позика іпотека">
-          <h2>Кредит</h2>
-          <p>Щомісячний платіж, загальна сума та переплата за кредитом.</p>
-          <button class="card-open" data-target="loan">Відкрити</button>
-        </article>
-
-        <article class="calc-card" data-keywords="площа фігура">
-          <h2>Площа</h2>
-          <p>Площа прямокутника, квадрата, кола, трикутника чи трапеції.</p>
-          <button class="card-open" data-target="area">Відкрити</button>
-        </article>
-      </div>
-    </section>
-
-    <!-- ВІДСОТКИ -->
-    <section id="percent" class="view">
-      <h1>Калькулятор відсотків</h1>
-
-      <form class="panel" id="formPctOf" novalidate>
-        <h2>Відсоток від числа</h2>
-        <p class="hint">Скільки становить певний відсоток від числа.</p>
-        <div class="field-row">
-          <label>Число
-            <input type="text" id="pctOfValue" inputmode="decimal" class="field-input" placeholder="200" required>
-          </label>
-          <label>Відсоток, %
-            <input type="text" id="pctOfPercent" inputmode="decimal" class="field-input" placeholder="15" required>
-          </label>
-        </div>
-        <button type="submit" class="btn">Порахувати</button>
-        <p class="result" id="pctOfResult">Результат: —</p>
-      </form>
-
-      <form class="panel" id="formPctShare" novalidate>
-        <h2>Число у відсотках</h2>
-        <p class="hint">Яким відсотком одне число є від іншого.</p>
-        <div class="field-row">
-          <label>Число
-            <input type="text" id="pctSharePart" inputmode="decimal" class="field-input" placeholder="30" required>
-          </label>
-          <label>Від числа
-            <input type="text" id="pctShareWhole" inputmode="decimal" class="field-input" placeholder="120" required>
-          </label>
-        </div>
-        <button type="submit" class="btn">Порахувати</button>
-        <p class="result" id="pctShareResult">Результат: —</p>
-      </form>
-
-      <form class="panel" id="formPctChange" novalidate>
-        <h2>Зміна числа на відсоток</h2>
-        <p class="hint">Збільшення або зменшення числа на вказаний відсоток.</p>
-        <div class="field-row">
-          <label>Число
-            <input type="text" id="pctChangeValue" inputmode="decimal" class="field-input" placeholder="1000" required>
-          </label>
-          <label>Відсоток, %
-            <input type="text" id="pctChangePercent" inputmode="decimal" class="field-input" placeholder="20" required>
-          </label>
-          <label>Дія
-            <select id="pctChangeMode">
-              <option value="increase">Збільшити</option>
-              <option value="decrease">Зменшити</option>
-            </select>
-          </label>
-        </div>
-        <button type="submit" class="btn">Порахувати</button>
-        <p class="result" id="pctChangeResult">Результат: —</p>
-      </form>
-
-      <div class="ad-slot" data-ad-slot="percent">Місце для реклами</div>
-    </section>
-
-    <!-- ВАЛЮТА -->
-    <section id="currency" class="view">
-      <h1>Калькулятор валют</h1>
-      <form class="panel" id="formCurrency" novalidate>
-        <p class="hint">Курс підтягується онлайн (European Central Bank). Якщо інтернету немає, використовується орієнтовний резервний курс.</p>
-        <div class="field-row">
-          <label>Сума
-            <input type="text" id="curAmount" inputmode="decimal" class="field-input" value="100" required>
-          </label>
-          <label>З валюти
-            <select id="curFrom"></select>
-          </label>
-          <button type="button" class="btn-swap" id="curSwap" title="Поміняти валюти місцями">⇄</button>
-          <label>У валюту
-            <select id="curTo"></select>
-          </label>
-        </div>
-        <button type="submit" class="btn">Конвертувати</button>
-        <p class="result" id="curResult">Результат: —</p>
-        <p class="hint" id="curNote"></p>
-      </form>
-      <div class="ad-slot" data-ad-slot="currency">Місце для реклами</div>
-    </section>
-
-    <!-- ЗНИЖКА -->
-    <section id="discount" class="view">
-      <h1>Калькулятор знижок</h1>
-      <form class="panel" id="formDiscount" novalidate>
-        <div class="field-row">
-          <label>Ціна без знижки
-            <input type="text" id="discPrice" inputmode="decimal" class="field-input" placeholder="1500" required>
-          </label>
-          <label>Знижка, %
-            <input type="text" id="discPercent" inputmode="decimal" class="field-input" placeholder="25" required>
-          </label>
-        </div>
-        <button type="submit" class="btn">Порахувати</button>
-        <p class="result" id="discResult">Результат: —</p>
-      </form>
-      <div class="ad-slot" data-ad-slot="discount">Місце для реклами</div>
-    </section>
-
-    <!-- КРЕДИТ -->
-    <section id="loan" class="view">
-      <h1>Калькулятор кредиту</h1>
-      <form class="panel" id="formLoan" novalidate>
-        <p class="hint">Ануїтетний платіж — однакова сума щомісяця. Без урахування комісій банку.</p>
-        <div class="field-row">
-          <label>Сума кредиту
-            <input type="text" id="loanAmount" inputmode="decimal" class="field-input" placeholder="200000" required>
-          </label>
-          <label>Ставка, % річних
-            <input type="text" id="loanRate" inputmode="decimal" class="field-input" placeholder="18" required>
-          </label>
-          <label>Строк, місяців
-            <input type="text" id="loanMonths" inputmode="numeric" class="field-input" placeholder="24" required>
-          </label>
-        </div>
-        <button type="submit" class="btn">Порахувати</button>
-        <p class="result" id="loanResult">Результат: —</p>
-      </form>
-      <div class="ad-slot" data-ad-slot="loan">Місце для реклами</div>
-    </section>
-
-    <!-- ПЛОЩА -->
-    <section id="area" class="view">
-      <h1>Калькулятор площі</h1>
-      <form class="panel" id="formArea" novalidate>
-        <label>Фігура
-          <select id="areaShape">
-            <option value="rectangle">Прямокутник</option>
-            <option value="square">Квадрат</option>
-            <option value="circle">Коло</option>
-            <option value="triangle">Трикутник</option>
-            <option value="trapezoid">Трапеція</option>
-          </select>
-        </label>
-
-        <div class="field-row area-group" data-shape="rectangle">
-          <label>Довжина <input type="text" id="areaRectW" inputmode="decimal" class="field-input" placeholder="5"></label>
-          <label>Ширина <input type="text" id="areaRectH" inputmode="decimal" class="field-input" placeholder="3"></label>
-        </div>
-
-        <div class="field-row area-group" data-shape="square" hidden>
-          <label>Сторона <input type="text" id="areaSquareSide" inputmode="decimal" class="field-input" placeholder="4"></label>
-        </div>
-
-        <div class="field-row area-group" data-shape="circle" hidden>
-          <label>Радіус <input type="text" id="areaCircleR" inputmode="decimal" class="field-input" placeholder="3"></label>
-        </div>
-
-        <div class="field-row area-group" data-shape="triangle" hidden>
-          <label>Основа <input type="text" id="areaTriBase" inputmode="decimal" class="field-input" placeholder="6"></label>
-          <label>Висота <input type="text" id="areaTriHeight" inputmode="decimal" class="field-input" placeholder="4"></label>
-        </div>
-
-        <div class="field-row area-group" data-shape="trapezoid" hidden>
-          <label>Основа 1 <input type="text" id="areaTrapA" inputmode="decimal" class="field-input" placeholder="6"></label>
-          <label>Основа 2 <input type="text" id="areaTrapB" inputmode="decimal" class="field-input" placeholder="4"></label>
-          <label>Висота <input type="text" id="areaTrapH" inputmode="decimal" class="field-input" placeholder="3"></label>
-        </div>
-
-        <button type="submit" class="btn">Порахувати площу</button>
-        <p class="result" id="areaResult">Результат: —</p>
-        <p class="hint">Результат виходить у тих самих одиницях у квадраті (наприклад, метри → м²).</p>
-      </form>
-      <div class="ad-slot" data-ad-slot="area">Місце для реклами</div>
-    </section>
-
-  </main>
-</div>
-
-<footer class="site-footer">
-  <!-- Рекламний блок Google AdSense (підвал сайту) -->
-  <div class="ad-slot ad-slot--footer" data-ad-slot="footer">Місце для реклами</div>
-  <p>Усі розрахунки виконуються прямо у вашому браузері.</p>
-</footer>
-
-<script>
-/* ======================================================
-   КАЛЬКУЛЯТОРИ — вся логіка сайту в одному файлі
-   ====================================================== */
-
-document.addEventListener('DOMContentLoaded', () => {
-  // Кожен калькулятор вмикається окремо й незалежно від інших.
-  // Якщо з якоїсь причини один з них не зміг запуститися (помилка),
-  // це не повинно "вбивати" решту кнопок на сторінці.
-  const steps = [
-    initNavigation,
-    initSearch,
-    initPercentCalculator,
-    initCurrencyCalculator,
-    initDiscountCalculator,
-    initLoanCalculator,
-    initAreaCalculator
-  ];
-
-  steps.forEach(step => {
-    try {
-      step();
-    } catch (err) {
-      console.error('Не вдалося ініціалізувати:', step.name, err);
-    }
-  });
-});
-
-/* ------------------------------------------------------
-   НАВІГАЦІЯ МІЖ РОЗДІЛАМИ (без перезавантаження сторінки)
-   ------------------------------------------------------ */
-function initNavigation() {
-  const views = document.querySelectorAll('.view');
-  const navLinks = document.querySelectorAll('.nav-link');
-
-  function showView(id) {
-    if (!document.getElementById(id)) id = 'home';
-
-    views.forEach(v => v.classList.toggle('is-active', v.id === id));
-    navLinks.forEach(l => l.classList.toggle('is-active', l.dataset.target === id));
-
-    // Оновлюємо адресний рядок, щоб на розділ можна було дати пряме посилання.
-    // У Safari зміна адресного рядка для сторінки, відкритої як локальний файл,
-    // іноді блокується браузером — обгортаємо в try/catch, щоб це НІКОЛИ
-    // не заважало самому перемиканню розділів і роботі калькуляторів.
-    try {
-      history.replaceState(null, '', '#' + id);
-    } catch (err) {
-      /* ігноруємо: сама навігація по сторінці від цього не залежить */
-    }
-    window.scrollTo({ top: 0, behavior: 'auto' });
-  }
-
-  // Будь-яка кнопка з data-target перемикає розділ
-  document.querySelectorAll('[data-target]').forEach(el => {
-    el.addEventListener('click', () => showView(el.dataset.target));
-  });
-
-  window.addEventListener('hashchange', () => {
-    showView(location.hash.replace('#', ''));
-  });
-
-  // Початковий розділ — з адресного рядка або головна
-  showView(location.hash.replace('#', '') || 'home');
-}
-
-/* ------------------------------------------------------
-   ПОШУК КАЛЬКУЛЯТОРА (фільтрує картки й меню)
-   ------------------------------------------------------ */
-function initSearch() {
-  const input = document.getElementById('searchInput');
-  const cards = document.querySelectorAll('.calc-card');
-  const navItems = document.querySelectorAll('.nav-link[data-target]:not([data-target="home"])');
-
-  input.addEventListener('input', () => {
-    const query = input.value.trim().toLowerCase();
-
-    cards.forEach(card => {
-      const text = (card.dataset.keywords || '') + ' ' + card.textContent.toLowerCase();
-      card.classList.toggle('is-hidden', query !== '' && !text.toLowerCase().includes(query));
-    });
-
-    navItems.forEach(link => {
-      const text = (link.dataset.keywords || '') + ' ' + link.textContent.toLowerCase();
-      link.classList.toggle('is-hidden', query !== '' && !text.toLowerCase().includes(query));
-    });
-  });
-}
-
-/* ------------------------------------------------------
-   Допоміжні функції
-   ------------------------------------------------------ */
-function getNumber(id) {
-  const raw = document.getElementById(id).value.trim();
-  if (raw === '') return NaN;
-  // Дозволяємо писати "20,5" (кома замість крапки) і "200 000" (пробіли як розділювач тисяч) —
-  // саме через це раніше поле вважалося некоректним і форма не рахувала.
-  const normalized = raw.replace(/\s+/g, '').replace(/,/g, '.');
-  const value = parseFloat(normalized);
-  return Number.isFinite(value) ? value : NaN;
-}
-
-function formatNumber(value, decimals = 2) {
-  return value.toLocaleString('uk-UA', {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals
-  });
-}
-
-function showResult(id, text) {
-  document.getElementById(id).textContent = text;
-}
-
-const INVALID_MESSAGE = 'Результат: введіть, будь ласка, коректні числа';
-
-/* ------------------------------------------------------
-   1. КАЛЬКУЛЯТОР ВІДСОТКІВ
-   ------------------------------------------------------ */
-function initPercentCalculator() {
-
-  document.getElementById('formPctOf').addEventListener('submit', e => {
-    e.preventDefault();
-    const value = getNumber('pctOfValue');
-    const percent = getNumber('pctOfPercent');
-    if (!Number.isFinite(value) || !Number.isFinite(percent)) {
-      showResult('pctOfResult', INVALID_MESSAGE);
-      return;
-    }
-    const result = value * percent / 100;
-    showResult('pctOfResult', `Результат: ${formatNumber(percent)}% від ${formatNumber(value)} = ${formatNumber(result)}`);
-  });
-
-  document.getElementById('formPctShare').addEventListener('submit', e => {
-    e.preventDefault();
-    const part = getNumber('pctSharePart');
-    const whole = getNumber('pctShareWhole');
-    if (!Number.isFinite(part) || !Number.isFinite(whole) || whole === 0) {
-      showResult('pctShareResult', whole === 0 ? 'Результат: ділення на нуль неможливе' : INVALID_MESSAGE);
-      return;
-    }
-    const result = (part / whole) * 100;
-    showResult('pctShareResult', `Результат: ${formatNumber(part)} — це ${formatNumber(result)}% від ${formatNumber(whole)}`);
-  });
-
-  document.getElementById('formPctChange').addEventListener('submit', e => {
-    e.preventDefault();
-    const value = getNumber('pctChangeValue');
-    const percent = getNumber('pctChangePercent');
-    const mode = document.getElementById('pctChangeMode').value;
-    if (!Number.isFinite(value) || !Number.isFinite(percent)) {
-      showResult('pctChangeResult', INVALID_MESSAGE);
-      return;
-    }
-    const factor = mode === 'increase' ? (1 + percent / 100) : (1 - percent / 100);
-    const result = value * factor;
-    const diff = Math.abs(result - value);
-    const verb = mode === 'increase' ? 'збільшено на' : 'зменшено на';
-    showResult('pctChangeResult', `Результат: ${formatNumber(result)} (${verb} ${formatNumber(diff)})`);
-  });
-}
-
-/* ------------------------------------------------------
-   2. КАЛЬКУЛЯТОР ВАЛЮТ
-   ------------------------------------------------------ */
-
-// Резервні курси відносно USD — використовуються лише тоді,
-// коли немає з'єднання з інтернетом і онлайн-курс недоступний.
-const FALLBACK_RATES_USD = {
-  USD: 1, EUR: 0.93, UAH: 41.5, GBP: 0.79,
-  PLN: 3.98, CZK: 23.5, CHF: 0.88, JPY: 152, CAD: 1.37, AUD: 1.52
-};
-const CURRENCY_LIST = Object.keys(FALLBACK_RATES_USD);
-
-function initCurrencyCalculator() {
-  const fromSelect = document.getElementById('curFrom');
-  const toSelect = document.getElementById('curTo');
-
-  CURRENCY_LIST.forEach(code => {
-    fromSelect.add(new Option(code, code));
-    toSelect.add(new Option(code, code));
-  });
-  fromSelect.value = 'USD';
-  toSelect.value = 'UAH';
-
-  document.getElementById('curSwap').addEventListener('click', () => {
-    const tmp = fromSelect.value;
-    fromSelect.value = toSelect.value;
-    toSelect.value = tmp;
-  });
-
-  document.getElementById('formCurrency').addEventListener('submit', async e => {
-    e.preventDefault();
-    const amount = getNumber('curAmount');
-    const from = fromSelect.value;
-    const to = toSelect.value;
-
-    if (!Number.isFinite(amount)) {
-      showResult('curResult', INVALID_MESSAGE);
-      return;
-    }
-    if (from === to) {
-      showResult('curResult', `Результат: ${formatNumber(amount)} ${from} = ${formatNumber(amount)} ${to}`);
-      document.getElementById('curNote').textContent = '';
-      return;
+    function updateDisplay() {
+      display.innerText = currentInput;
     }
 
-    showResult('curResult', 'Результат: отримуємо курс…');
-
-    try {
-      const url = `https://api.frankfurter.app/latest?amount=${amount}&from=${from}&to=${to}`;
-      const response = await fetch(url);
-      if (!response.ok) throw new Error('Сервіс курсів недоступний');
-      const data = await response.json();
-      const converted = data.rates[to];
-
-      showResult('curResult', `Результат: ${formatNumber(amount)} ${from} = ${formatNumber(converted)} ${to}`);
-      document.getElementById('curNote').textContent = `Курс Європейського центрального банку станом на ${data.date}.`;
-    } catch (err) {
-      // Немає інтернету або сервіс недоступний — рахуємо за резервним курсом
-      const inUsd = amount / FALLBACK_RATES_USD[from];
-      const converted = inUsd * FALLBACK_RATES_USD[to];
-
-      showResult('curResult', `Результат: ${formatNumber(amount)} ${from} ≈ ${formatNumber(converted)} ${to}`);
-      document.getElementById('curNote').textContent =
-        'Не вдалося отримати поточний курс (перевірте інтернет) — показано приблизний резервний курс.';
-    }
-  });
-}
-
-/* ------------------------------------------------------
-   3. КАЛЬКУЛЯТОР ЗНИЖОК
-   ------------------------------------------------------ */
-function initDiscountCalculator() {
-  document.getElementById('formDiscount').addEventListener('submit', e => {
-    e.preventDefault();
-    const price = getNumber('discPrice');
-    const percent = getNumber('discPercent');
-
-    if (!Number.isFinite(price) || !Number.isFinite(percent)) {
-      showResult('discResult', INVALID_MESSAGE);
-      return;
+    function appendNumber(num) {
+      if (currentInput === '0') {
+        currentInput = num;
+      } else {
+        currentInput += num;
+      }
+      updateDisplay();
     }
 
-    const saved = price * percent / 100;
-    const final = price - saved;
-    showResult('discResult', `Результат: ціна зі знижкою ${formatNumber(final)} (заощаджено ${formatNumber(saved)})`);
-  });
-}
-
-/* ------------------------------------------------------
-   4. КАЛЬКУЛЯТОР КРЕДИТУ (ануїтетний платіж)
-   ------------------------------------------------------ */
-function initLoanCalculator() {
-  document.getElementById('formLoan').addEventListener('submit', e => {
-    e.preventDefault();
-    const amount = getNumber('loanAmount');
-    const annualRate = getNumber('loanRate');
-    const months = getNumber('loanMonths');
-
-    if (!Number.isFinite(amount) || !Number.isFinite(annualRate) || !Number.isFinite(months) || months <= 0) {
-      showResult('loanResult', INVALID_MESSAGE);
-      return;
+    function appendOperator(op) {
+      const lastChar = currentInput.slice(-1);
+      if (['+', '-', '*', '/'].includes(lastChar)) {
+        currentInput = currentInput.slice(0, -1) + op;
+      } else {
+        currentInput += op;
+      }
+      updateDisplay();
     }
 
-    const monthlyRate = annualRate / 100 / 12;
-    let monthlyPayment;
-
-    if (monthlyRate === 0) {
-      monthlyPayment = amount / months;
-    } else {
-      const factor = Math.pow(1 + monthlyRate, months);
-      monthlyPayment = amount * monthlyRate * factor / (factor - 1);
+    function clearDisplay() {
+      currentInput = '0';
+      updateDisplay();
     }
 
-    const totalPayment = monthlyPayment * months;
-    const totalInterest = totalPayment - amount;
-
-    showResult(
-      'loanResult',
-      `Результат: платіж ${formatNumber(monthlyPayment)}/міс · всього виплатите ${formatNumber(totalPayment)} · переплата ${formatNumber(totalInterest)}`
-    );
-  });
-}
-
-/* ------------------------------------------------------
-   5. КАЛЬКУЛЯТОР ПЛОЩІ
-   ------------------------------------------------------ */
-function initAreaCalculator() {
-  const shapeSelect = document.getElementById('areaShape');
-  const groups = document.querySelectorAll('.area-group');
-
-  function syncVisibleFields() {
-    const shape = shapeSelect.value;
-    groups.forEach(group => {
-      group.hidden = group.dataset.shape !== shape;
-    });
-  }
-  shapeSelect.addEventListener('change', syncVisibleFields);
-  syncVisibleFields();
-
-  document.getElementById('formArea').addEventListener('submit', e => {
-    e.preventDefault();
-    const shape = shapeSelect.value;
-    let area = NaN;
-
-    if (shape === 'rectangle') {
-      area = getNumber('areaRectW') * getNumber('areaRectH');
-    } else if (shape === 'square') {
-      const side = getNumber('areaSquareSide');
-      area = side * side;
-    } else if (shape === 'circle') {
-      const r = getNumber('areaCircleR');
-      area = Math.PI * r * r;
-    } else if (shape === 'triangle') {
-      area = 0.5 * getNumber('areaTriBase') * getNumber('areaTriHeight');
-    } else if (shape === 'trapezoid') {
-      area = 0.5 * (getNumber('areaTrapA') + getNumber('areaTrapB')) * getNumber('areaTrapH');
+    function calculate() {
+      try {
+        currentInput = eval(currentInput).toString();
+      } catch (error) {
+        currentInput = 'Помилка';
+      }
+      updateDisplay();
     }
-
-    if (!Number.isFinite(area) || area < 0) {
-      showResult('areaResult', INVALID_MESSAGE);
-      return;
-    }
-    showResult('areaResult', `Результат: площа ≈ ${formatNumber(area)} (кв. одиниць)`);
-  });
-}
-
-</script>
+  </script>
 </body>
 </html>
+
+
